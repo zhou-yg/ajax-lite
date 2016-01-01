@@ -31,10 +31,10 @@
         var methods = createMethods();
 
         var xhr = new XMLHttpRequest();
-        var contentType = 'application/x-www-form-urlencoded';
+        //var contentType = 'application/x-www-form-urlencoded';
 
         xhr.open(type, url || '', true);
-        xhr.setRequestHeader('Content-Type', contentType);
+        //xhr.setRequestHeader('Content-Type', contentType);
         xhr.addEventListener('readystatechange', $private.ready(methods), false);
         xhr.send($private.objectToQueryString(data));
 
@@ -78,7 +78,7 @@
     };
 
     $private.objectToQueryString = function objectToQueryString(data) {
-        return $private.isObject(data)
+        return $private.isObject(data) && !(data instanceof FormData)
             ? $private.getQueryString(data)
             : data;
     };
@@ -113,7 +113,6 @@
         $public.delete = function del(data) {
             return $private.XHRConnection('DELETE', url, data);
         };
-
 
         return $public;
     }
