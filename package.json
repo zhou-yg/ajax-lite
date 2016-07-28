@@ -1,8 +1,8 @@
 {
-  "name": "@fdaciuk/ajax",
+  "name": "ajax-lite",
   "description": "Ajax module in Vanilla JS",
   "version": "0.0.11",
-  "main": "dist/ajax.min.js",
+  "main": "src/ajax.js",
   "directories": {
     "test": "test"
   },
