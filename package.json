@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/fdaciuk/ajax.git"
+    "url": "git+https://github.com/zhouyg/ajax.git"
   },
   "keywords": [
     "ajax",
@@ -18,9 +18,9 @@
   "author": "Fernando Daciuk",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/fdaciuk/ajax/issues"
+    "url": "https://github.com/zhou-yg/ajax/issues"
   },
-  "homepage": "https://github.com/fdaciuk/ajax",
+  "homepage": "https://github.com/zhouyg/ajax",
   "scripts": {
     "test": "gulp test",
     "pub": "npm publish --access=public"
