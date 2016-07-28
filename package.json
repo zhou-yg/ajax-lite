@@ -1,7 +1,7 @@
 {
   "name": "ajax-lite",
   "description": "Ajax module in Vanilla JS",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "main": "src/ajax.js",
   "directories": {
     "test": "test"
