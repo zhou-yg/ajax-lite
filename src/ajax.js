@@ -13,22 +13,8 @@
   }
 })(this, function () {
   'use strict';
-  var $private = {};
 
-  var createMethods = function createMethods() {
-    return {
-      then: function () {
-      },
-      done: function () {
-      },
-      error: function () {
-      },
-      always: function () {
-      }
-    }
-  }
-  $private.XHRConnection = function XHRConnection(type, url, data) {
-    var methods = createMethods();
+  function XHRConnection(type, url, data) {
 
     var xhr = new XMLHttpRequest();
 
@@ -38,28 +24,26 @@
       xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     }
 
-    xhr.addEventListener('readystatechange', $private.ready(methods), false);
-    xhr.send($private.objectToQueryString(data));
+    return new Promise(function(resolve,reject){
 
-    return $private.promises(methods);
-  };
-  $private.ready = function ready(methods) {
+      xhr.addEventListener('readystatechange', function(){
 
-    return function () {
-      var xhr = this;
-      var DONE = 4;
-      if (xhr.readyState === DONE) {
-        methods.always
-          .apply(methods, $private.parseResponse(xhr));
-        if (xhr.status >= 200 && xhr.status < 300) {
-          methods.done.apply(methods, $private.parseResponse(xhr));
-          methods.then.apply(methods, $private.parseResponse(xhr));
+        var DONE = 4;
+        if (xhr.readyState === DONE) {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            resolve(parseResponse(xhr))
+          }else{
+            var e =new Error('network');
+            e.status = xhr.status;
+            reject(e);
+          }
         }
-        methods.error.apply(methods, $private.parseResponse(xhr));
-      }
-    }
+
+      }, false);
+      xhr.send(objectToQueryString(data));
+    });
   };
-  $private.parseResponse = function parseResponse(xhr) {
+  function parseResponse(xhr) {
     var result;
     try {
       result = JSON.parse(xhr.responseText);
@@ -67,26 +51,15 @@
     catch (e) {
       result = xhr.responseText;
     }
-    return [result, xhr];
+    return result
   };
 
-  $private.promises = function promises(methods) {
-    var allPromises = {};
-    Object.keys(methods).forEach(function (promise) {
-      allPromises[promise] = function (callback) {
-        return methods[promise] = callback
-      }
-    }, this);
-    return allPromises;
-  };
-
-  $private.objectToQueryString = function objectToQueryString(data) {
-    //console.log(data,typeof data,$private.isObject(data),data instanceof FormData);
+  function objectToQueryString(data) {
     return (data instanceof FormData) ? data :
-      $private.isObject(data) ? $private.getQueryString(data) : data;
+      isObject(data) ? getQueryString(data) : data;
   };
 
-  $private.getQueryString = function getQueryString(object) {
+  function getQueryString(object) {
     return Object.keys(object).filter(function (key) {
       return object[key] !== undefined && object[key] !== null;
     }).map(function (item) {
@@ -100,32 +73,31 @@
     }).join('&');
   };
 
-  $private.isObject = function isObject(data) {
+  function isObject(data) {
     return '[object Object]' === Object.prototype.toString.call(data);
   };
 
-
   function Ajax(url) {
-    var $public = {};
+    var pub = {};
 
-    $public.get = function get(data) {
+    pub.get = function get(data) {
 
-      return $private.XHRConnection('GET', url + '?' + $private.objectToQueryString(data));
+      return XHRConnection('GET', url + '?' + objectToQueryString(data));
     };
 
-    $public.post = function post(data) {
-      return $private.XHRConnection('POST', url, data);
+    pub.post = function post(data) {
+      return XHRConnection('POST', url, data);
     };
 
-    $public.put = function put(data) {
-      return $private.XHRConnection('PUT', url, data);
+    pub.put = function put(data) {
+      return XHRConnection('PUT', url, data);
     };
 
-    $public.delete = function del(data) {
-      return $private.XHRConnection('DELETE', url, data);
+    pub.delete = function del(data) {
+      return XHRConnection('DELETE', url, data);
     };
 
-    return $public;
+    return pub;
   }
 
   window.ajax = Ajax;
